@@ -14,6 +14,9 @@
 		A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2D1E99BFB8005E3F4D /* Assets.xcassets */; };
 		A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2F1E99BFB8005E3F4D /* LaunchScreen.storyboard */; };
 		A8214B3A1E99C00C005E3F4D /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8214B391E99C00C005E3F4D /* Accelerate.framework */; };
+		A847FA921EA80C19005089ED /* armadillo in Resources */ = {isa = PBXBuildFile; fileRef = A847FA901EA80C19005089ED /* armadillo */; };
+		A847FA931EA80C19005089ED /* armadillo_bits in Resources */ = {isa = PBXBuildFile; fileRef = A847FA911EA80C19005089ED /* armadillo_bits */; };
+		A8B721961E9C0DD600C380C4 /* multiply.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8B721941E9C0DD600C380C4 /* multiply.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,10 @@
 		A8214B301E99BFB8005E3F4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A8214B321E99BFB8005E3F4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A8214B391E99C00C005E3F4D /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		A847FA901EA80C19005089ED /* armadillo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = armadillo; sourceTree = "<group>"; };
+		A847FA911EA80C19005089ED /* armadillo_bits */ = {isa = PBXFileReference; lastKnownFileType = folder; path = armadillo_bits; sourceTree = "<group>"; };
+		A8B721941E9C0DD600C380C4 /* multiply.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multiply.cpp; sourceTree = "<group>"; };
+		A8B721951E9C0DD600C380C4 /* multiply.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = multiply.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +69,8 @@
 		A8214B201E99BFB8005E3F4D /* xnor */ = {
 			isa = PBXGroup;
 			children = (
+				A847FA901EA80C19005089ED /* armadillo */,
+				A847FA911EA80C19005089ED /* armadillo_bits */,
 				A8214B241E99BFB8005E3F4D /* AppDelegate.h */,
 				A8214B251E99BFB8005E3F4D /* AppDelegate.m */,
 				A8214B271E99BFB8005E3F4D /* ViewController.h */,
@@ -71,6 +80,8 @@
 				A8214B2F1E99BFB8005E3F4D /* LaunchScreen.storyboard */,
 				A8214B321E99BFB8005E3F4D /* Info.plist */,
 				A8214B211E99BFB8005E3F4D /* Supporting Files */,
+				A8B721941E9C0DD600C380C4 /* multiply.cpp */,
+				A8B721951E9C0DD600C380C4 /* multiply.hpp */,
 			);
 			path = xnor;
 			sourceTree = "<group>";
@@ -151,7 +162,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */,
+				A847FA931EA80C19005089ED /* armadillo_bits in Resources */,
 				A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */,
+				A847FA921EA80C19005089ED /* armadillo in Resources */,
 				A8214B2C1E99BFB8005E3F4D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -164,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8214B291E99BFB8005E3F4D /* ViewController.mm in Sources */,
+				A8B721961E9C0DD600C380C4 /* multiply.cpp in Sources */,
 				A8214B261E99BFB8005E3F4D /* AppDelegate.m in Sources */,
 				A8214B231E99BFB8005E3F4D /* main.m in Sources */,
 			);
@@ -324,6 +338,7 @@
 				A8214B371E99BFB8005E3F4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
