@@ -7,13 +7,14 @@
 //
 
 #import "ViewController.h"
-//#import "Accelerate/Accelerate.h"
+#import <Accelerate/Accelerate.h>
+#import <Foundation/Foundation.h>
 
 #ifdef __cplusplus
 #include "armadillo"
 #include <stdlib.h>
 #include <stddef.h>
-#include <arm_neon.h>
+//#include <arm_neon.h>
 #endif
 
 @interface ViewController ()
@@ -63,47 +64,65 @@ void im2col(uint8_t* data_im,
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    using namespace std;
+//    using namespace std;
+//    
+//    arma::wall_clock timer;
+//    
+//    int D = 4;
+//    
+//    // initialize random data
+//    arma::fmat A; A.randn(D,1);
+//    
+//    uint8_t data_im[8] = { 0, 8, 14, 2, 7, 7, 0, 1 };
+//    
+//    int channels = 2;
+//    int height = 3;
+//    int width = 3;
+//    int ksize = 2;
+//    int stride = 1;
+//    int pad = 0;
+//    float *data_col = new float[32];
+//    im2col(data_im,
+//           channels,  height,  width,
+//           ksize,  stride, pad, data_col);
+//    
+//    
+//    for (int i = 0; i < 32; i++) {
+//        cout << data_col[i] << " " << endl;
+//    }
+//    arma::mat x = { 1, 1, 2, 0 };
+//    x = repmat(x, 1, 2);
+//    arma::vec v = vectorise(x);
+//    double *vecData = v.memptr();
+//    
+//    for (int i = 0; i < 8; i++) {
+//        cout << vecData[i] << endl;
+//    }
+//    
+//    
+//    uint8x8_t vec1 = { 1, 1 };
+//    uint8x8_t vec2 = { 0, 1 };
+//    uint8x8_t vec3 = veor_u8(vec1, vec2);
+//    cout << vec3[0] << " " << vec3[1] << endl;
+//    cout << "Get sign bits ----" << endl;
+//    vFloat w = { 1 , -3, -2, 6 };
+//    vFloat e = { 9, 2, -1, -7 };
+//    vUInt32 res1 = vsignbitf(w);             // DO PLAIN XOR ON THIS
+//    vUInt32 res2 = vsignbitf(e);             // DO PLAIN XOR ON THIS
+//    res1 = (uint32x4_t) res1;
+//    res2 = (uint32x4_t) res2;
+//    res1 = veorq_u32(res1, res2);
+//    cout << res1[0] << " " << res1[1] << " " << res1[2] << " " << res1[3] << endl;
     
-    arma::wall_clock timer;
-    
-    int D = 4;
-    
-    // initialize random data
-    arma::fmat A; A.randn(D,1);
-    
-    uint8_t data_im[8] = { 0, 8, 14, 2, 7, 7, 0, 1 };
-    
-    int channels = 2;
-    int height = 3;
-    int width = 3;
-    int ksize = 2;
-    int stride = 1;
-    int pad = 0;
-    float *data_col = new float[32];
-    im2col(data_im,
-           channels,  height,  width,
-           ksize,  stride, pad, data_col);
-    
-    
-    for (int i = 0; i < 32; i++) {
-        cout << data_col[i] << " " << endl;
-    }
-    arma::mat x = { 1, 1, 2, 0 };
-    x = repmat(x, 1, 2);
-    arma::vec v = vectorise(x);
-    double *vecData = v.memptr();
-    
-    for (int i = 0; i < 8; i++) {
-        cout << vecData[i] << endl;
-    }
-    
-    
-    uint8x8_t vec1 = { 1, 1 };
-    uint8x8_t vec2 = { 0, 1 };
-    uint8x8_t vec3 = veor_u8(vec1, vec2);
-    cout << vec3[0] << " " << vec3[1] << endl;
-    
+    /* Test reading data files */
+    NSBundle *main = [NSBundle mainBundle];
+    NSString *wtPath = [main pathForResource:@"t10k-images-idx3-ubyte" ofType:@"data"];
+    NSString *bsPath = [main pathForResource:@"t10k-labels-idx1-ubyte" ofType:@"data"];
+    NSURL *URLI = [main URLForResource:@"t10k-images-idx3-ubyte" withExtension:@"data"];
+    NSURL *URLL = [main URLForResource:@"t10k-labels-idx1-ubyte" withExtension:@"data"];
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:URLI];
+    NSData *labelData = [[NSData alloc] initWithContentsOfURL:URLL];
+    std::cout << labelData.length << std::endl;
 }
 
 
