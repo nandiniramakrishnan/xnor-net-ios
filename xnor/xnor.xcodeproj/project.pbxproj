@@ -16,10 +16,10 @@
 		A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2D1E99BFB8005E3F4D /* Assets.xcassets */; };
 		A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2F1E99BFB8005E3F4D /* LaunchScreen.storyboard */; };
 		A8214B3A1E99C00C005E3F4D /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8214B391E99C00C005E3F4D /* Accelerate.framework */; };
-		A8C3A2621EB11BE200FD6CBB /* train-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */; };
-		A8C3A2631EB11BE200FD6CBB /* train-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */; };
-		A8C3A2641EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */; };
-		A8C3A2651EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2611EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data */; };
+		A8C3A2661EB1672000FD6CBB /* train-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */; };
+		A8C3A2671EB1672000FD6CBB /* train-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */; };
+		A8C3A2681EB1672000FD6CBB /* t10k-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */; };
+		A8C3A2691EB1672000FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2611EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -170,10 +170,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8C3A2621EB11BE200FD6CBB /* train-images-idx3-ubyte.data in Resources */,
-				A8C3A2631EB11BE200FD6CBB /* train-labels-idx1-ubyte.data in Resources */,
-				A8C3A2641EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data in Resources */,
-				A8C3A2651EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */,
+				A8C3A2661EB1672000FD6CBB /* train-images-idx3-ubyte.data in Resources */,
+				A8C3A2671EB1672000FD6CBB /* train-labels-idx1-ubyte.data in Resources */,
+				A8C3A2681EB1672000FD6CBB /* t10k-images-idx3-ubyte.data in Resources */,
+				A8C3A2691EB1672000FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */,
 				A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */,
 				A80789F91EAACBBD00FBA137 /* armadillo_bits in Resources */,
 				A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */,

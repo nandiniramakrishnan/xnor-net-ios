@@ -13,7 +13,10 @@
 #ifdef __cplusplus
 #include "armadillo"
 #include <stdlib.h>
-#include <stddef.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 //#include <arm_neon.h>
 #endif
 
@@ -22,6 +25,38 @@
 @end
 
 @implementation ViewController
+
+unsigned char* read_mnist_labels(std::string full_path, int number_of_labels) {
+    auto reverseInt = [](int i) {
+        unsigned char c1, c2, c3, c4;
+        c1 = i & 255, c2 = (i >> 8) & 255, c3 = (i >> 16) & 255, c4 = (i >> 24) & 255;
+        return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
+    };
+    
+    typedef unsigned char uchar;
+    
+    std::ifstream file(full_path, std::ios::binary);
+    
+    if(file.is_open()) {
+        int magic_number = 0;
+        file.read((char *)&magic_number, sizeof(magic_number));
+        magic_number = reverseInt(magic_number);
+        
+        if(magic_number != 2049) throw std::runtime_error("Invalid MNIST label file!");
+        
+        file.read((char *)&number_of_labels, sizeof(number_of_labels)), number_of_labels = reverseInt(number_of_labels);
+        
+        uchar* _dataset = new uchar[number_of_labels];
+        for(int i = 0; i < number_of_labels; i++) {
+            file.read((char*)&_dataset[i], 1);
+            std::cout << _dataset[i] << std::endl;
+
+        }
+        return _dataset;
+    } else {
+        throw std::runtime_error("Unable to open file");
+    }
+}
 
 float im2col_get_pixel(uint8_t *im, int height, int width, int channels,
                        int row, int col, int channel, int pad)
@@ -64,7 +99,7 @@ void im2col(uint8_t* data_im,
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-//    using namespace std;
+    using namespace std;
 //    
 //    arma::wall_clock timer;
 //    
@@ -114,15 +149,18 @@ void im2col(uint8_t* data_im,
 //    res1 = veorq_u32(res1, res2);
 //    cout << res1[0] << " " << res1[1] << " " << res1[2] << " " << res1[3] << endl;
     
-    /* Test reading data files */
-    NSBundle *main = [NSBundle mainBundle];
-    NSString *wtPath = [main pathForResource:@"t10k-images-idx3-ubyte" ofType:@"data"];
-    NSString *bsPath = [main pathForResource:@"t10k-labels-idx1-ubyte" ofType:@"data"];
-    NSURL *URLI = [main URLForResource:@"t10k-images-idx3-ubyte" withExtension:@"data"];
-    NSURL *URLL = [main URLForResource:@"t10k-labels-idx1-ubyte" withExtension:@"data"];
-    NSData *imageData = [[NSData alloc] initWithContentsOfURL:URLI];
-    NSData *labelData = [[NSData alloc] initWithContentsOfURL:URLL];
-    std::cout << labelData.length << std::endl;
+    /* Image dimension details */
+    int imageWidth = 28;
+    int imageHeight = 28;
+    int numPixelsPerImage = imageWidth * imageHeight;
+    //int numTrainImages = 60000;
+    int numTestImages = 10000;
+    
+    uint8_t *images = [self getImages];
+    uint8_t *labels = [self getLabels];
+    arma::uchar_mat X(images, numPixelsPerImage, numTestImages);      /* Each column is an image */
+    printf("%u\n",X.max());
+    printf("%u\n", labels[3000]);
 }
 
 
@@ -131,5 +169,38 @@ void im2col(uint8_t* data_im,
     // Dispose of any resources that can be recreated.
 }
 
+- (uint8_t *)getImages {
+    int imageOffset = 16;
+    NSBundle *main = [NSBundle mainBundle];
+    NSURL *URLI = [main URLForResource:@"t10k-images-idx3-ubyte" withExtension:@"data"];
+    NSData *imageData = [[NSData alloc] initWithContentsOfURL:URLI];
+    NSString *imagePath = [main pathForResource:@"t10k-images-idx3-ubyte" ofType:@"data"];
+    std::string imagePathString = std::string([imagePath UTF8String]);
+    int numImageBytes = imageData.length;
+    int fd_i = open(imagePathString.c_str(), O_RDONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+    if (fd_i == -1) {
+        std::cout << "Error: failed to open output file at " << imagePathString << ". errno = " << errno << std::endl;
+    }
+    uint8_t *images = (uint8_t *)mmap(NULL, numImageBytes, PROT_READ, MAP_FILE | MAP_SHARED, fd_i, 0);
+    images = images + imageOffset;
+    return images;
+}
+
+- (uint8_t *)getLabels {
+    int labelOffset = 8;
+    NSBundle *main = [NSBundle mainBundle];
+    NSURL *URLL = [main URLForResource:@"train-labels-idx1-ubyte" withExtension:@"data"];
+    NSData *labelData = [[NSData alloc] initWithContentsOfURL:URLL];
+    NSString *labelPath = [main pathForResource:@"train-labels-idx1-ubyte" ofType:@"data"];
+    std::string labelPathString = std::string([labelPath UTF8String]);
+    int numLabels = labelData.length;
+    int fd_l = open(labelPathString.c_str(), O_RDONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+    if (fd_l == -1) {
+        std::cout << "Error: failed to open output file at " << labelPathString << ". errno = " << errno << std::endl;
+    }
+    uint8_t *labels = (uint8_t *)mmap(NULL, numLabels, PROT_READ, MAP_FILE | MAP_SHARED, fd_l, 0);
+    labels = labels + labelOffset;
+    return labels;
+}
 
 @end
