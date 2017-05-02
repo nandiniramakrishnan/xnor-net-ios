@@ -16,6 +16,8 @@
 		A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2D1E99BFB8005E3F4D /* Assets.xcassets */; };
 		A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A8214B2F1E99BFB8005E3F4D /* LaunchScreen.storyboard */; };
 		A8214B3A1E99C00C005E3F4D /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8214B391E99C00C005E3F4D /* Accelerate.framework */; };
+		A89C46CF1EB56E3800725F0A /* Convolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89C46CD1EB56E3800725F0A /* Convolution.cpp */; };
+		A89C46DE1EB6B47C00725F0A /* im2col.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89C46DC1EB6B47C00725F0A /* im2col.cpp */; };
 		A8C3A2661EB1672000FD6CBB /* train-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */; };
 		A8C3A2671EB1672000FD6CBB /* train-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */; };
 		A8C3A2681EB1672000FD6CBB /* t10k-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */; };
@@ -37,6 +39,10 @@
 		A8214B301E99BFB8005E3F4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A8214B321E99BFB8005E3F4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A8214B391E99C00C005E3F4D /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		A89C46CD1EB56E3800725F0A /* Convolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Convolution.cpp; sourceTree = "<group>"; };
+		A89C46CE1EB56E3800725F0A /* Convolution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Convolution.hpp; sourceTree = "<group>"; };
+		A89C46DC1EB6B47C00725F0A /* im2col.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = im2col.cpp; sourceTree = "<group>"; };
+		A89C46DD1EB6B47C00725F0A /* im2col.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = im2col.hpp; sourceTree = "<group>"; };
 		A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "train-images-idx3-ubyte.data"; path = "mnistData/train-images-idx3-ubyte.data"; sourceTree = "<group>"; };
 		A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "train-labels-idx1-ubyte.data"; path = "mnistData/train-labels-idx1-ubyte.data"; sourceTree = "<group>"; };
 		A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "t10k-images-idx3-ubyte.data"; path = "mnistData/t10k-images-idx3-ubyte.data"; sourceTree = "<group>"; };
@@ -86,7 +92,11 @@
 				A8214B2D1E99BFB8005E3F4D /* Assets.xcassets */,
 				A8214B2F1E99BFB8005E3F4D /* LaunchScreen.storyboard */,
 				A8214B321E99BFB8005E3F4D /* Info.plist */,
+				A89C46CD1EB56E3800725F0A /* Convolution.cpp */,
+				A89C46CE1EB56E3800725F0A /* Convolution.hpp */,
 				A8214B211E99BFB8005E3F4D /* Supporting Files */,
+				A89C46DC1EB6B47C00725F0A /* im2col.cpp */,
+				A89C46DD1EB6B47C00725F0A /* im2col.hpp */,
 			);
 			path = xnor;
 			sourceTree = "<group>";
@@ -191,7 +201,9 @@
 			files = (
 				A8214B291E99BFB8005E3F4D /* ViewController.mm in Sources */,
 				A8214B261E99BFB8005E3F4D /* AppDelegate.m in Sources */,
+				A89C46CF1EB56E3800725F0A /* Convolution.cpp in Sources */,
 				A8214B231E99BFB8005E3F4D /* main.m in Sources */,
+				A89C46DE1EB6B47C00725F0A /* im2col.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,8 +324,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 4K6836J557;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/xnor",
+				);
 				INFOPLIST_FILE = xnor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.xnor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -326,8 +342,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 4K6836J557;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/xnor",
+				);
 				INFOPLIST_FILE = xnor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.xnor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
