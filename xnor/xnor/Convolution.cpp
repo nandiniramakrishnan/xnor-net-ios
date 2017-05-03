@@ -62,11 +62,13 @@ arma::mat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
     /* Get signs of input patches using Armadillo */
     arma::uchar_mat input_signs = arma::sign(patches);
     input_signs = input_signs.t();  // Transpose the matrix to get patches as cols
+    std::cout << input_signs.n_rows << " " << input_signs.n_cols << std::endl;
+    std::cout << patch_size << std::endl;
     input_signs.insert_rows( patch_size, neon_vec_size - patch_size );
     
     /* Get signs of weights using Armadillo */
     arma::uchar_mat weight_signs = arma::conv_to<arma::uchar_mat>::from(arma::sign(w));
-    weight_signs.insert_rows( patch_size, neon_vec_size - patch_size );
+    weight_signs.insert_rows( patch_size - 1, neon_vec_size - patch_size );
     
     /* Temp vector for doing bitcount */
     uint8_t *bitcount_ptr = new uint8_t[neon_vec_size];
@@ -76,33 +78,33 @@ arma::mat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
     
     /* Perform the convolution */
     for (int i = 0; i < num; i++) {
-        printf("filter number = %d\n", i);
+        //printf("filter number = %d\n", i);
         uint8_t *weight_sign_ptr = weight_signs.colptr(i);
         arma::fmat scaling_factor = K * weight_avgs(i);
         for (int j = 0; j < numPatches; j++) {
             uint8_t *input_sign_patch_ptr = input_signs.colptr(j);
-            printf("patch number = %d\n", j);
+            //printf("patch number = %d\n", j);
             
             for (int m = 0; m < num_vecs_per_patch + 1; m++) {
                 uint8x16_t input_vec = vld1q_u8(input_sign_patch_ptr);
                 uint8x16_t weight_vec = vld1q_u8(weight_sign_ptr);
                 uint8x16_t and_res = vandq_u8(input_vec, weight_vec);   // VAND q0,q0,q0
-                for (int l = 0; l < neon_vec_size; l++) {
-                    printf("%u & %u = %u\n", input_vec[l], weight_vec[l], and_res[l]);
-                    printf("---\n");
-                }
+//                for (int l = 0; l < neon_vec_size; l++) {
+//                    printf("%u & %u = %u\n", input_vec[l], weight_vec[l], and_res[l]);
+//                    printf("---\n");
+//                }
                 vst1q_u8(bitcount_ptr, and_res);
                 // load into arma vec and sum
                 
                 arma::uchar_vec bitcount(bitcount_ptr, neon_vec_size);
-                for (int l = 0; l < neon_vec_size;  l++) {
-                    printf("%u", bitcount(l));
-                }
-                printf("\n%u\n", arma::sum(bitcount));
+//                for (int l = 0; l < neon_vec_size;  l++) {
+//                    printf("%u", bitcount(l));
+//                }
+//                printf("\n%u\n", arma::sum(bitcount));
                 result(j, i) = arma::sum(bitcount);
             }
         }
-        std::cout << "Scaling factor = " << scaling_factor << std::endl;
+        //std::cout << "Scaling factor = " << scaling_factor << std::endl;
         result.col(i) = result.col(i) % scaling_factor;
     }
     return result;

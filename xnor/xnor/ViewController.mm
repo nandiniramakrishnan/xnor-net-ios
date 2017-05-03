@@ -9,12 +9,15 @@
 #import "ViewController.h"
 #import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
+#import <GPUImage/GPUImage.h>
 
 #ifdef __cplusplus
 #include "armadillo"
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <opencv2/opencv.hpp>
+#include "opencv2/highgui/ios.h"
 #include "Convolution.hpp"
 #endif
 
@@ -41,11 +44,26 @@
     [self.view addSubview:imageView_];
     // Ensure aspect ratio looks correct
     imageView_.contentMode = UIViewContentModeScaleAspectFit;
-    UIImage *grey_im = [self convertToGreyscale:image];
+//    UIImage *grey_im = [self convertToGreyscale:image];
     
+    cv::Mat cvImage;
+    UIImageToMat(image, cvImage);
     
-    CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(grey_im.CGImage));
-    UInt8 * buf = (UInt8 *) CFDataGetBytePtr(rawData);
+    // Convert to grayscale
+    cv::Mat gray;
+    cv::cvtColor(cvImage, gray, CV_RGBA2GRAY);
+    UIImage *finalImage = MatToUIImage(gray);
+    
+    CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(finalImage.CGImage));
+    CFIndex ind = CFDataGetLength(rawData);
+    cout << ind << endl;
+    uint8_t * buf = (uint8_t *) CFDataGetBytePtr(rawData);
+//    for (int i = 0; i < 951; i++) {
+//        printf("image data[%d] = %u\n", i, buf[i]);
+//    }
+//    
+//    
+//
 
     /* Image dimension details */
 //    int imageWidth = 28;
@@ -84,7 +102,7 @@
     cout << binConvResult << endl;
 
     
-    imageView_.image = grey_im;
+    imageView_.image = finalImage;
 }
 
 
