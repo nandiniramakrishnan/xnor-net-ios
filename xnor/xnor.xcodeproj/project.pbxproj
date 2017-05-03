@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A80789F81EAACBBD00FBA137 /* armadillo in Resources */ = {isa = PBXBuildFile; fileRef = A80789F61EAACBBD00FBA137 /* armadillo */; };
-		A80789F91EAACBBD00FBA137 /* armadillo_bits in Resources */ = {isa = PBXBuildFile; fileRef = A80789F71EAACBBD00FBA137 /* armadillo_bits */; };
 		A8214B231E99BFB8005E3F4D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A8214B221E99BFB8005E3F4D /* main.m */; };
 		A8214B261E99BFB8005E3F4D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8214B251E99BFB8005E3F4D /* AppDelegate.m */; };
 		A8214B291E99BFB8005E3F4D /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8214B281E99BFB8005E3F4D /* ViewController.mm */; };
@@ -18,16 +16,17 @@
 		A8214B3A1E99C00C005E3F4D /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8214B391E99C00C005E3F4D /* Accelerate.framework */; };
 		A89C46CF1EB56E3800725F0A /* Convolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89C46CD1EB56E3800725F0A /* Convolution.cpp */; };
 		A89C46DE1EB6B47C00725F0A /* im2col.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89C46DC1EB6B47C00725F0A /* im2col.cpp */; };
+		A89C46E51EB965C600725F0A /* armadillo in Resources */ = {isa = PBXBuildFile; fileRef = A89C46E31EB965C600725F0A /* armadillo */; };
+		A89C46E61EB965C600725F0A /* armadillo_bits in Resources */ = {isa = PBXBuildFile; fileRef = A89C46E41EB965C600725F0A /* armadillo_bits */; };
 		A8C3A2661EB1672000FD6CBB /* train-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */; };
 		A8C3A2671EB1672000FD6CBB /* train-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */; };
 		A8C3A2681EB1672000FD6CBB /* t10k-images-idx3-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */; };
 		A8C3A2691EB1672000FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */ = {isa = PBXBuildFile; fileRef = A8C3A2611EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data */; };
+		A8FF96461EB9747D0007BFBA /* image.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = A8FF96451EB9747D0007BFBA /* image.jpeg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A80789F41EA994DC00FBA137 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		A80789F61EAACBBD00FBA137 /* armadillo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = armadillo; sourceTree = "<group>"; };
-		A80789F71EAACBBD00FBA137 /* armadillo_bits */ = {isa = PBXFileReference; lastKnownFileType = folder; path = armadillo_bits; sourceTree = "<group>"; };
 		A8214B1E1E99BFB8005E3F4D /* xnor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = xnor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8214B221E99BFB8005E3F4D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A8214B241E99BFB8005E3F4D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -43,10 +42,13 @@
 		A89C46CE1EB56E3800725F0A /* Convolution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Convolution.hpp; sourceTree = "<group>"; };
 		A89C46DC1EB6B47C00725F0A /* im2col.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = im2col.cpp; sourceTree = "<group>"; };
 		A89C46DD1EB6B47C00725F0A /* im2col.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = im2col.hpp; sourceTree = "<group>"; };
+		A89C46E31EB965C600725F0A /* armadillo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = armadillo; sourceTree = "<group>"; };
+		A89C46E41EB965C600725F0A /* armadillo_bits */ = {isa = PBXFileReference; lastKnownFileType = folder; path = armadillo_bits; sourceTree = "<group>"; };
 		A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "train-images-idx3-ubyte.data"; path = "mnistData/train-images-idx3-ubyte.data"; sourceTree = "<group>"; };
 		A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "train-labels-idx1-ubyte.data"; path = "mnistData/train-labels-idx1-ubyte.data"; sourceTree = "<group>"; };
 		A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "t10k-images-idx3-ubyte.data"; path = "mnistData/t10k-images-idx3-ubyte.data"; sourceTree = "<group>"; };
 		A8C3A2611EB11BE200FD6CBB /* t10k-labels-idx1-ubyte.data */ = {isa = PBXFileReference; lastKnownFileType = file; name = "t10k-labels-idx1-ubyte.data"; path = "mnistData/t10k-labels-idx1-ubyte.data"; sourceTree = "<group>"; };
+		A8FF96451EB9747D0007BFBA /* image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,8 +84,8 @@
 		A8214B201E99BFB8005E3F4D /* xnor */ = {
 			isa = PBXGroup;
 			children = (
-				A80789F61EAACBBD00FBA137 /* armadillo */,
-				A80789F71EAACBBD00FBA137 /* armadillo_bits */,
+				A89C46E31EB965C600725F0A /* armadillo */,
+				A89C46E41EB965C600725F0A /* armadillo_bits */,
 				A8214B241E99BFB8005E3F4D /* AppDelegate.h */,
 				A8214B251E99BFB8005E3F4D /* AppDelegate.m */,
 				A8214B271E99BFB8005E3F4D /* ViewController.h */,
@@ -104,6 +106,7 @@
 		A8214B211E99BFB8005E3F4D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A8FF96451EB9747D0007BFBA /* image.jpeg */,
 				A8C3A25E1EB11BE200FD6CBB /* train-images-idx3-ubyte.data */,
 				A8C3A25F1EB11BE200FD6CBB /* train-labels-idx1-ubyte.data */,
 				A8C3A2601EB11BE200FD6CBB /* t10k-images-idx3-ubyte.data */,
@@ -181,13 +184,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8C3A2661EB1672000FD6CBB /* train-images-idx3-ubyte.data in Resources */,
+				A8FF96461EB9747D0007BFBA /* image.jpeg in Resources */,
 				A8C3A2671EB1672000FD6CBB /* train-labels-idx1-ubyte.data in Resources */,
 				A8C3A2681EB1672000FD6CBB /* t10k-images-idx3-ubyte.data in Resources */,
 				A8C3A2691EB1672000FD6CBB /* t10k-labels-idx1-ubyte.data in Resources */,
 				A8214B311E99BFB8005E3F4D /* LaunchScreen.storyboard in Resources */,
-				A80789F91EAACBBD00FBA137 /* armadillo_bits in Resources */,
 				A8214B2E1E99BFB8005E3F4D /* Assets.xcassets in Resources */,
-				A80789F81EAACBBD00FBA137 /* armadillo in Resources */,
+				A89C46E61EB965C600725F0A /* armadillo_bits in Resources */,
+				A89C46E51EB965C600725F0A /* armadillo in Resources */,
 				A8214B2C1E99BFB8005E3F4D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

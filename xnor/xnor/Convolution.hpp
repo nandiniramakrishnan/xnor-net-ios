@@ -10,8 +10,8 @@
 #define Convolution_hpp
 
 #include <stdio.h>
-#include "armadillo"
 #import <Accelerate/Accelerate.h>
+#include "armadillo"
 
 class Convolution {
     int k;
