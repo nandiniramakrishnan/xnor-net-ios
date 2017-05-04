@@ -26,11 +26,11 @@ arma::fmat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
     //w.fill(1/(k*k));
     //arma::fmat w = { 1, 1, 1, 1, 1, 8, 8, 1, 1, 8, 8, 1, 1, 1, 1, 1 };
     //arma::fmat w = { 9, 0, 9, 7, 0, 7, 9, 0, 9 };
-    //arma::fmat w = { 1, 1, 1, 1, 1, 1, 2, 4, 2, 1, 1, 4, 8, 4, 1, 1, 2, 4, 2, 1, 1, 1, 1, 1, 1 };
-    arma::fmat w(1, k*k);
-    w.fill(1.0);
+    arma::fmat w = { 1, 1, 1, 1, 1, 1, 2, 4, 2, 1, 1, 4, 8, 4, 1, 1, 2, 4, 2, 1, 1, 1, 1, 1, 1 };
+    //arma::fmat w(1, k*k);
+    //w.fill(1.0);
     w = w.t();
-    
+    arma::wall_clock timer;
     /* Average of weights */
     arma::fmat weight_avgs = arma::mean(w);
     
@@ -65,12 +65,12 @@ arma::fmat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
     input_signs(arma::span::all, arma::span(0,k*k - 1) ) = arma::conv_to<arma::uchar_mat>::from(arma::sign(patches));
     input_signs = input_signs.t();  // Transpose the matrix to get patches as cols
     //input_signs.insert_rows( patch_size - 1, neon_vec_size - patch_size );
-    printf("input signs done\n");
+    //printf("input signs done\n");
     /* Get signs of weights using Armadillo */
     arma::uchar_mat weight_signs(neon_vec_size*num_vecs_per_patch, num);
     weight_signs(arma::span(0,k*k - 1), arma::span::all ) = arma::conv_to<arma::uchar_mat>::from(arma::sign(w));
   //  input_signs = arma::sign(input_signs);
-    printf("weight signs done\n");
+    //printf("weight signs done\n");
 //    arma::uchar_mat weight_signs = arma::conv_to<arma::uchar_mat>::from(arma::sign(w));
 //    weight_signs.insert_rows( patch_size - 1, neon_vec_size - patch_size );
     
@@ -79,7 +79,9 @@ arma::fmat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
     
     /* Declare return value */
     arma::fmat result(numPatches, num);
-    printf("before the for loops\n");
+    //printf("before the for loops\n");
+    
+    timer.tic();
     /* Perform the convolution */
     for (int i = 0; i < num; i++) {
         //printf("filter number = %d\n", i);
@@ -111,6 +113,8 @@ arma::fmat Convolution::binConv(uint8_t *input, int h_in, int w_in) {
         //std::cout << "Scaling factor = " << scaling_factor << std::endl;
         result.col(i) = result.col(i) % scaling_factor;
     }
+    double binconvsecs = timer.toc();
+    std::cout << "Binary convolution took " << binconvsecs << " seconds" << std::endl;
     
 
     return reshape(result, h_out, w_out);

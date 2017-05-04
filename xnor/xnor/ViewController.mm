@@ -122,8 +122,8 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     using namespace std;
-
-    UIImage *image = [UIImage imageNamed:@"pisa.jpeg"];
+    arma::wall_clock timer;
+    UIImage *image = [UIImage imageNamed:@"taj.jpg"];
     if(image == nil) cout << "Cannot read in the file!!" << endl;
     
     // Setup the display
@@ -154,26 +154,23 @@
     int group = 1;
     int num = 1;
 
-
-    //    /* Toy example! */
-//    uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
-//    int ksize = 2;
-    //        int h_in = 4;
-    //        int w_in = 4;
-//    int16_t kernel[4] = {1, 1, 2, 0};
     int ksize = 5;
     int16_t kernel[25] = { 1, 1, 1, 1, 1, 1, 2, 4, 2, 1, 1, 4, 8, 4, 1, 1, 2, 4, 2, 1, 1, 1, 1, 1, 1 };
-    
-    UIImage *pp = [self boxblurImage:finalImage k:kernel ksize:ksize];
-
+    timer.tic();
+    UIImage *vImageOutput = [self boxblurImage:finalImage k:kernel ksize:ksize];
+    double vIm_secs = timer.toc();
+    cout << "vImage took " << vIm_secs << endl;
     Convolution *conv1 = new Convolution(ksize, stride, c, pad, group, num);
+    //timer.tic();
     arma::fmat binConvResult = conv1->binConv(buf, h_in, w_in);
     binConvResult = binConvResult / arma::max(arma::max(binConvResult));
-    cout << arma::max(arma::max(binConvResult)) << endl;
+    //cout << arma::max(arma::max(binConvResult)) << endl;
     arma::uchar_mat Q = arma::conv_to<arma::uchar_mat>::from(binConvResult * 255);
-    cv::Mat res = Arma2Cv(Q);
-    UIImage *resim = MatToUIImage(res);
-    imageView_.image = resim;
+    cv::Mat bin_res = Arma2Cv(Q);
+    UIImage *binresim = MatToUIImage(bin_res);
+    //double binConvSecs = timer.toc();
+    //cout << "Binary convolution took " << binConvSecs << endl;
+    imageView_.image = binresim;
 }
 
 
