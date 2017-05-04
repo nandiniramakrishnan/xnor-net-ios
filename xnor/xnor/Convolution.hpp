@@ -24,7 +24,7 @@ class Convolution {
     arma::fvec b;
 public:
     Convolution(int k, int stride, int c, int pad, int group, int num);
-    arma::mat binConv(uint8_t *input, int h_in, int w_in);
+    arma::fmat binConv(uint8_t *input, int h_in, int w_in);
 };
 
 #endif /* Convolution_hpp */

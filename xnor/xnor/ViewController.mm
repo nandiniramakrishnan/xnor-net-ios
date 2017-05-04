@@ -28,6 +28,86 @@
 
 @implementation ViewController
 
+-(UIImage *)boxblurImage:(UIImage *)image k:(int16_t *)k ksize:(int)ksize {
+    //Get CGImage from UIImage
+    CGImageRef img = image.CGImage;
+    
+    //setup variables
+    vImage_Buffer inBuffer, outBuffer;
+    
+    vImage_Error error;
+    
+    void *pixelBuffer;
+    
+    //create vImage_Buffer with data from CGImageRef
+    
+    //These two lines get get the data from the CGImage
+    CGDataProviderRef inProvider = CGImageGetDataProvider(img);
+    CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
+    
+    //The next three lines set up the inBuffer object based on the attributes of the CGImage
+    inBuffer.width = CGImageGetWidth(img);
+    inBuffer.height = CGImageGetHeight(img);
+    inBuffer.rowBytes = CGImageGetBytesPerRow(img);
+    
+    //This sets the pointer to the data for the inBuffer object
+    inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
+    
+    //create vImage_Buffer for output
+    
+    //allocate a buffer for the output image and check if it exists in the next three lines
+    pixelBuffer = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
+    
+    if(pixelBuffer == NULL)
+        NSLog(@"No pixelbuffer");
+    
+    //set up the output buffer object based on the same dimensions as the input image
+    outBuffer.data = pixelBuffer;
+    outBuffer.width = CGImageGetWidth(img);
+    outBuffer.height = CGImageGetHeight(img);
+    outBuffer.rowBytes = CGImageGetBytesPerRow(img);
+    
+    //perform convolution - this is the call for our type of data
+    //error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
+    //error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 2, NULL, kvImageEdgeExtend);
+
+    error = vImageConvolve_Planar8(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 8, NULL, kvImageEdgeExtend);
+
+    
+    //check for an error in the call to perform the convolution
+    if (error) {
+        NSLog(@"error from convolution %ld", error);
+    }
+    
+    //create CGImageRef from vImage_Buffer output
+    //1 - CGBitmapContextCreateImage -
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    
+    CGContextRef ctx = CGBitmapContextCreate(outBuffer.data,
+                                             outBuffer.width,
+                                             outBuffer.height,
+                                             8,
+                                             outBuffer.rowBytes,
+                                             colorSpace,
+                                             kCGImageAlphaNone);
+    CGImageRef imageRef = CGBitmapContextCreateImage (ctx);
+    
+    UIImage *returnImage = [UIImage imageWithCGImage:imageRef];
+    
+    //clean up
+    CGContextRelease(ctx);
+    CGColorSpaceRelease(colorSpace);
+    
+    free(pixelBuffer);
+    CFRelease(inBitmapData);
+    
+    CGColorSpaceRelease(colorSpace);
+    CGImageRelease(imageRef);
+    
+    return returnImage;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -44,7 +124,6 @@
     [self.view addSubview:imageView_];
     // Ensure aspect ratio looks correct
     imageView_.contentMode = UIViewContentModeScaleAspectFit;
-//    UIImage *grey_im = [self convertToGreyscale:image];
     
     cv::Mat cvImage;
     UIImageToMat(image, cvImage);
@@ -58,38 +137,10 @@
     CFIndex ind = CFDataGetLength(rawData);
     cout << ind << endl;
     uint8_t * buf = (uint8_t *) CFDataGetBytePtr(rawData);
-//    for (int i = 0; i < 951; i++) {
-//        printf("image data[%d] = %u\n", i, buf[i]);
-//    }
-//    
-//    
-//
-
-    /* Image dimension details */
-//    int imageWidth = 28;
-//    int imageHeight = 28;
-//    int numPixelsPerImage = imageWidth * imageHeight;
-//    
-//    /* Dataset size details */
-//    int numTrainImages = 60000;
-//    int numTestImages = 10000;
-//    
-//    /* Get training data */
-//    uint8_t *images = [self getImages:@"train-images-idx3-ubyte"];
-//    uint8_t *labels = [self getLabels:@"train-labels-idx1-ubyte"];
-//    
-//    /* Convert image vector into matrix where each column is an image */
-//    arma::uchar_mat train_mat(images, numPixelsPerImage, numTrainImages);
-//    
-//    /* Perform binary convolution on first image (for testing) */
-//    uint8_t *image1 = train_mat.colptr(0);
-//    /* Toy example! */
-//    uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
-    
-    
-    
     int h_in = 636;
     int w_in = 951;
+    //    int h_in = 4;
+    //    int w_in = 4;
     /* Create conv1 layer */
     int k = 3;
     int stride = 1;
@@ -97,12 +148,18 @@
     int pad = 0;
     int group = 1;
     int num = 1;
-    Convolution *conv1 = new Convolution(k, stride, c, pad, group, num);
-    arma::mat binConvResult = conv1->binConv(buf, h_in, w_in);
-    cout << binConvResult << endl;
 
+    int ksize = 3;
+    int16_t kernel[25] = {-2, -2, 6, -2, 1, 0, 0, 0, 0};
+    UIImage *pp = [self boxblurImage:finalImage k:kernel ksize:ksize];
+    //    /* Toy example! */
+    uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
     
-    imageView_.image = finalImage;
+    Convolution *conv1 = new Convolution(k, stride, c, pad, group, num);
+    arma::fmat binConvResult = conv1->binConv(buf, h_in, w_in);
+    cv::Mat res = Arma2Cv(binConvResult);
+    UIImage *resim = MatToUIImage(res);
+    imageView_.image = pp;
 }
 
 
@@ -110,101 +167,19 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-- (UIImage *) convertToGreyscale:(UIImage *)i {
-    
-    int kRed = 1;
-    int kGreen = 2;
-    int kBlue = 4;
-    
-    int colors = kGreen | kBlue | kRed;
-    int m_width = i.size.width;
-    int m_height = i.size.height;
-    
-    uint32_t *rgbImage = (uint32_t *) malloc(m_width * m_height * sizeof(uint32_t));
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(rgbImage, m_width, m_height, 8, m_width * 4, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);
-    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGContextSetShouldAntialias(context, NO);
-    CGContextDrawImage(context, CGRectMake(0, 0, m_width, m_height), [i CGImage]);
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
-    
-    // now convert to grayscale
-    uint8_t *m_imageData = (uint8_t *) malloc(m_width * m_height);
-    for(int y = 0; y < m_height; y++) {
-        for(int x = 0; x < m_width; x++) {
-            uint32_t rgbPixel=rgbImage[y*m_width+x];
-            uint32_t sum=0,count=0;
-            if (colors & kRed) {sum += (rgbPixel>>24)&255; count++;}
-            if (colors & kGreen) {sum += (rgbPixel>>16)&255; count++;}
-            if (colors & kBlue) {sum += (rgbPixel>>8)&255; count++;}
-            m_imageData[y*m_width+x]=sum/count;
-        }
-    }
-    free(rgbImage);
-    
-    // convert from a gray scale image back into a UIImage
-    uint8_t *result = (uint8_t *) calloc(m_width * m_height *sizeof(uint32_t), 1);
-    
-    // process the image back to rgb
-    for(int i = 0; i < m_height * m_width; i++) {
-        result[i*4]=0;
-        int val=m_imageData[i];
-        result[i*4+1]=val;
-        result[i*4+2]=val;
-        result[i*4+3]=val;
-    }
-    
-    // create a UIImage
-    colorSpace = CGColorSpaceCreateDeviceRGB();
-    context = CGBitmapContextCreate(result, m_width, m_height, 8, m_width * sizeof(uint32_t), colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipLast);
-    CGImageRef image = CGBitmapContextCreateImage(context);
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
-    UIImage *resultUIImage = [UIImage imageWithCGImage:image];
-    CGImageRelease(image);
-    
-    free(m_imageData);
-    
-    // make sure the data will be released by giving it to an autoreleased NSData
-    [NSData dataWithBytesNoCopy:result length:m_width * m_height];
-    
-    return resultUIImage;
+//==============================================================================
+// Quick function to convert to Armadillo matrix header
+arma::fmat Cv2Arma(cv::Mat &cvX)
+{
+    arma::fmat X(cvX.ptr<float>(0), cvX.cols, cvX.rows, false); // This is the transpose of the OpenCV X_
+    return X; // Return the new matrix (no new memory allocated)
 }
-
-- (unsigned char *)getImages:(NSString*)path {
-    int imageOffset = 16;
-    NSBundle *main = [NSBundle mainBundle];
-    NSURL *URLI = [main URLForResource:path withExtension:@"data"];
-    NSData *imageData = [[NSData alloc] initWithContentsOfURL:URLI];
-    NSString *imagePath = [main pathForResource:path ofType:@"data"];
-    std::string imagePathString = std::string([imagePath UTF8String]);
-    int numImageBytes = imageData.length;
-    int fd_i = open(imagePathString.c_str(), O_RDONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    if (fd_i == -1) {
-        std::cout << "Error: failed to open output file at " << imagePathString << ". errno = " << errno << std::endl;
-    }
-    unsigned char *images = (unsigned char *)mmap(NULL, numImageBytes, PROT_READ, MAP_FILE | MAP_SHARED, fd_i, 0);
-    images = images + imageOffset;
-    return images;
-}
-
-- (uint8_t *)getLabels:(NSString*)path {
-    int labelOffset = 8;
-    NSBundle *main = [NSBundle mainBundle];
-    NSURL *URLL = [main URLForResource:path withExtension:@"data"];
-    NSData *labelData = [[NSData alloc] initWithContentsOfURL:URLL];
-    NSString *labelPath = [main pathForResource:path ofType:@"data"];
-    std::string labelPathString = std::string([labelPath UTF8String]);
-    int numLabels = labelData.length;
-    int fd_l = open(labelPathString.c_str(), O_RDONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-    if (fd_l == -1) {
-        std::cout << "Error: failed to open output file at " << labelPathString << ". errno = " << errno << std::endl;
-    }
-    uint8_t *labels = (uint8_t *)mmap(NULL, numLabels, PROT_READ, MAP_FILE | MAP_SHARED, fd_l, 0);
-    labels = labels + labelOffset;
-    return labels;
+//==============================================================================
+// Quick function to convert to OpenCV (floating point) matrix header
+cv::Mat Arma2Cv(arma::fmat &X)
+{
+    cv::Mat cvX = cv::Mat(X.n_cols, X.n_rows,CV_32F, X.memptr()).clone();
+    return cvX; // Return the new matrix (new memory allocated)
 }
 
 @end
