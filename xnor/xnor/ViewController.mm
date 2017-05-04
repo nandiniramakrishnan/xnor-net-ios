@@ -80,7 +80,7 @@
     //error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
     //error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 2, NULL, kvImageEdgeExtend);
 
-    error = vImageConvolve_Planar8(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 2, NULL, kvImageEdgeExtend);
+    error = vImageConvolve_Planar8(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 64, NULL, kvImageEdgeExtend);
 
     
     //check for an error in the call to perform the convolution
@@ -123,8 +123,8 @@
     
     using namespace std;
 
-    UIImage *image = [UIImage imageNamed:@"image.jpeg"];
-    if(image == nil) cout << "Cannot read in the file image.jpeg!!" << endl;
+    UIImage *image = [UIImage imageNamed:@"pisa.jpeg"];
+    if(image == nil) cout << "Cannot read in the file!!" << endl;
     
     // Setup the display
     // Setup the your imageView_ view, so it takes up the entire App screen......
@@ -143,13 +143,12 @@
     UIImage *finalImage = MatToUIImage(gray);
     
     CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(finalImage.CGImage));
-    CFIndex ind = CFDataGetLength(rawData);
     uint8_t * buf = (uint8_t *) CFDataGetBytePtr(rawData);
     int h_in = image.size.height;
     int w_in = image.size.width;
 
     /* Create conv1 layer */
-    int stride = 1;
+    int stride = 2;
     int c = 1;
     int pad = 0;
     int group = 1;
@@ -162,8 +161,8 @@
     //        int h_in = 4;
     //        int w_in = 4;
 //    int16_t kernel[4] = {1, 1, 2, 0};
-    int ksize = 3;
-    int16_t kernel[9] = { 1, 2, 1, 2, 8, 2, 1, 2, 1 };
+    int ksize = 5;
+    int16_t kernel[25] = { 1, 1, 1, 1, 1, 1, 2, 4, 2, 1, 1, 4, 8, 4, 1, 1, 2, 4, 2, 1, 1, 1, 1, 1, 1 };
     
     UIImage *pp = [self boxblurImage:finalImage k:kernel ksize:ksize];
 
