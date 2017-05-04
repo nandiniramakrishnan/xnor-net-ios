@@ -15,6 +15,6 @@
 
 void im2col(uint8_t* data_im,
             int channels,  int height,  int width,
-            int ksize,  int stride, int pad, uint8_t *data_col);
+            int ksize,  int stride, int pad, float *data_col);
 
 #endif /* im2col_hpp */

@@ -23,7 +23,7 @@ uint8_t im2col_get_pixel(uint8_t *im, int height, int width, int channels,
 //https://github.com/BVLC/caffe/blob/master/LICENSE
 void im2col(uint8_t *data_im,
                 int channels,  int height,  int width,
-                int ksize,  int stride, int pad, uint8_t *data_col)
+                int ksize,  int stride, int pad, float *data_col)
 {
     int c,h,w;
     int height_col = (height + 2*pad - ksize) / stride + 1;

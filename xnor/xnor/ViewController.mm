@@ -46,18 +46,23 @@
     CFDataRef inBitmapData = CGDataProviderCopyData(inProvider);
     
     //The next three lines set up the inBuffer object based on the attributes of the CGImage
+    //uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
     inBuffer.width = CGImageGetWidth(img);
     inBuffer.height = CGImageGetHeight(img);
     inBuffer.rowBytes = CGImageGetBytesPerRow(img);
+//    inBuffer.width = 4;
+//    inBuffer.height = 4;
+//    inBuffer.rowBytes = 4;
     
     //This sets the pointer to the data for the inBuffer object
     inBuffer.data = (void*)CFDataGetBytePtr(inBitmapData);
-    
+    //inBuffer.data = (void*)toy;
     //create vImage_Buffer for output
     
     //allocate a buffer for the output image and check if it exists in the next three lines
-    pixelBuffer = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
     
+    pixelBuffer = malloc(CGImageGetBytesPerRow(img) * CGImageGetHeight(img));
+    //pixelBuffer = malloc(16);
     if(pixelBuffer == NULL)
         NSLog(@"No pixelbuffer");
     
@@ -66,12 +71,16 @@
     outBuffer.width = CGImageGetWidth(img);
     outBuffer.height = CGImageGetHeight(img);
     outBuffer.rowBytes = CGImageGetBytesPerRow(img);
+//    outBuffer.data = pixelBuffer;
+//    outBuffer.width = 4;
+//    outBuffer.height = 4;
+//    outBuffer.rowBytes = 4;
     
     //perform convolution - this is the call for our type of data
     //error = vImageBoxConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, boxSize, boxSize, NULL, kvImageEdgeExtend);
     //error = vImageConvolve_ARGB8888(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 2, NULL, kvImageEdgeExtend);
 
-    error = vImageConvolve_Planar8(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 8, NULL, kvImageEdgeExtend);
+    error = vImageConvolve_Planar8(&inBuffer, &outBuffer, NULL, 0, 0, k, ksize, ksize, 2, NULL, kvImageEdgeExtend);
 
     
     //check for an error in the call to perform the convolution
@@ -135,31 +144,37 @@
     
     CFDataRef rawData = CGDataProviderCopyData(CGImageGetDataProvider(finalImage.CGImage));
     CFIndex ind = CFDataGetLength(rawData);
-    cout << ind << endl;
     uint8_t * buf = (uint8_t *) CFDataGetBytePtr(rawData);
-    int h_in = 636;
-    int w_in = 951;
-    //    int h_in = 4;
-    //    int w_in = 4;
+    int h_in = image.size.height;
+    int w_in = image.size.width;
+
     /* Create conv1 layer */
-    int k = 3;
     int stride = 1;
     int c = 1;
     int pad = 0;
     int group = 1;
     int num = 1;
 
-    int ksize = 3;
-    int16_t kernel[25] = {-2, -2, 6, -2, 1, 0, 0, 0, 0};
-    UIImage *pp = [self boxblurImage:finalImage k:kernel ksize:ksize];
+
     //    /* Toy example! */
-    uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
+//    uint8_t toy[16] = { 0, 0, 4, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 2, 0 };
+//    int ksize = 2;
+    //        int h_in = 4;
+    //        int w_in = 4;
+//    int16_t kernel[4] = {1, 1, 2, 0};
+    int ksize = 3;
+    int16_t kernel[9] = { 1, 2, 1, 2, 8, 2, 1, 2, 1 };
     
-    Convolution *conv1 = new Convolution(k, stride, c, pad, group, num);
+    UIImage *pp = [self boxblurImage:finalImage k:kernel ksize:ksize];
+
+    Convolution *conv1 = new Convolution(ksize, stride, c, pad, group, num);
     arma::fmat binConvResult = conv1->binConv(buf, h_in, w_in);
-    cv::Mat res = Arma2Cv(binConvResult);
+    binConvResult = binConvResult / arma::max(arma::max(binConvResult));
+    cout << arma::max(arma::max(binConvResult)) << endl;
+    arma::uchar_mat Q = arma::conv_to<arma::uchar_mat>::from(binConvResult * 255);
+    cv::Mat res = Arma2Cv(Q);
     UIImage *resim = MatToUIImage(res);
-    imageView_.image = pp;
+    imageView_.image = resim;
 }
 
 
@@ -176,9 +191,9 @@ arma::fmat Cv2Arma(cv::Mat &cvX)
 }
 //==============================================================================
 // Quick function to convert to OpenCV (floating point) matrix header
-cv::Mat Arma2Cv(arma::fmat &X)
+cv::Mat Arma2Cv(arma::uchar_mat &X)
 {
-    cv::Mat cvX = cv::Mat(X.n_cols, X.n_rows,CV_32F, X.memptr()).clone();
+    cv::Mat cvX = cv::Mat(X.n_cols, X.n_rows,CV_8U, X.memptr()).clone();
     return cvX; // Return the new matrix (new memory allocated)
 }
 
